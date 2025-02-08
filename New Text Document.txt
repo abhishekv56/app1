@@ -1,0 +1,927 @@
+Widget (Stateless and Stateful)
+1. Stateless widgets are like static content eg: text
+2. Stateful widgets are those which can change or update the UI eg: checkbox
+
+Named and positional arguments :
+1. Named arguments are by default optional arguments
+2. Positional arguments are required arguments if we wont pass positional arguments then it will give the error
+
+Widget tree:
+widgets are nested one inside the another while combining all the widgets we get the required UI.
+widgets have the number of positional and named arguments as well..
+
+Void main()
+The entry  point of the app execution
+inside it we use runApp() function in which we pass a widget as the argument..
+ 
+
+
+
+
+
+Dashboard/dash_board_screen.dart
+
+import 'package:app1/Dashboard/tab_four.dart';
+import 'package:app1/Dashboard/tab_one.dart';
+import 'package:app1/Dashboard/tab_three.dart';
+import 'package:app1/Dashboard/tab_two.dart';
+import 'package:flutter/material.dart';
+
+class DashBoard extends StatefulWidget {
+  const DashBoard({super.key});
+
+  @override
+  State<DashBoard> createState() => _DashBoardState();
+}
+
+class _DashBoardState extends State<DashBoard> {
+  int currentIndex=0;
+
+  final List<Widget>screens=[
+    TabOne(),
+    TabTwo(),
+    TabThree(),
+    TabFour(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return  MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Home'),
+        ),
+        body: screens[currentIndex],
+        bottomNavigationBar:BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: currentIndex,
+          onTap: (value){
+            setState(() {
+              currentIndex=value;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu),
+              label: 'Expansion Tile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'List View',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.pages),
+              label: 'View pager',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+tab_four.dart
+
+
+import 'package:app1/Login/login_screen.dart';
+import 'package:flutter/material.dart';
+
+class TabFour extends StatefulWidget {
+  const TabFour({super.key});
+
+  @override
+  State<TabFour> createState() => _TabFourState();
+}
+
+class _TabFourState extends State<TabFour> {
+  @override
+  Widget build(BuildContext context) {
+    return  Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircleAvatar(
+              radius: 80,
+              backgroundImage: AssetImage('assets/images/profile.webp'),
+            ),
+            SizedBox(height: 20,),
+            const Text(
+              'Abhishek',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            const Text(
+              'abhishek@gmail.com',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                color: Colors.grey
+              ),
+            ),
+            SizedBox(height: 30,),
+            Container(
+              height: 55,
+              width: 200,
+              decoration: BoxDecoration(
+                  color: Colors.deepPurple,
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              child: TextButton(
+                onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+                },
+                child: const Text('LOG OUT',
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20,),
+            ListTile(
+              leading: Icon(Icons.person,  size: 30,),
+              title: Text('Abhishek'),
+              subtitle: Text('Name'),
+            ),
+            ListTile(
+              leading: Icon(Icons.email,  size: 30,),
+              title: Text('abhishek@gmail.com'),
+              subtitle: Text('Email'),
+            )
+
+          ],
+        ),
+
+    );
+  }
+}
+
+
+
+tab_one.dart
+
+
+import 'package:flutter/material.dart';
+
+class TabOne extends StatefulWidget {
+  const TabOne({super.key});
+
+  @override
+  State<TabOne> createState() => _TabOneState();
+}
+
+class _TabOneState extends State<TabOne> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+              title: Text('Expansion Tile 1'),
+              subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+            title: Text('Expansion Tile 1'),
+            subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+            title: Text('Expansion Tile 1'),
+            subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+            title: Text('Expansion Tile 1'),
+            subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+            title: Text('Expansion Tile 1'),
+            subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+          ExpansionTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.ac_unit),
+            ),
+            title: Text('Expansion Tile 1'),
+            subtitle: Text('Trailing expansion arrow icon'),
+            children: [
+              ListTile(title: Text('This is tile number 1')),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+tab_three.dart
+
+
+import 'package:flutter/material.dart';
+
+class TabThree extends StatefulWidget {
+  const TabThree({super.key});
+
+  @override
+  State<TabThree> createState() => _TabThreeState();
+}
+
+class _TabThreeState extends State<TabThree> {
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      primary: false,
+      padding: const EdgeInsets.all(20),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      crossAxisCount: 2,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[100],
+          child: const Text("GridView 1"),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[200],
+          child: const Text('GridView 2'),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[300],
+          child: const Text('GridView 3'),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[400],
+          child: const Text('GridView 4'),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[500],
+          child: const Text('GridView 5'),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[600],
+          child: const Text('GridView 6'),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+tab_two.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+
+import '../Models/list_view_model.dart';
+
+class TabTwo extends StatefulWidget {
+  const TabTwo({super.key});
+
+  @override
+  State<TabTwo> createState() => _TabTwoState();
+}
+
+class _TabTwoState extends State<TabTwo> {
+
+
+  Future<List<Posts>> _getPosts() async{
+   var data= await http.get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+   var jsonData = json.decode(data.body);
+   List<Posts> posts=[];
+      for(var p in jsonData){
+        Posts post =Posts(p["id"],p["title"],p["body"]);
+        posts.add(post);
+      }
+      print(posts.length);
+      return posts;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _getPosts(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.data==null){
+            return Container(
+              child: const Center(
+                child: Text('Loading....'),
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context,int index){
+              return Card(
+                child: ListTile(
+                  leading: Text(snapshot.data[index].id.toString()),
+                  title: Text(snapshot.data[index].title),
+                  subtitle: Text(snapshot.data[index].body),
+                ),
+              );
+            },
+          );
+        }
+    );
+  }
+}
+
+
+
+database_helper.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+
+import '../Models/list_view_model.dart';
+
+class TabTwo extends StatefulWidget {
+  const TabTwo({super.key});
+
+  @override
+  State<TabTwo> createState() => _TabTwoState();
+}
+
+class _TabTwoState extends State<TabTwo> {
+
+
+  Future<List<Posts>> _getPosts() async{
+   var data= await http.get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+   var jsonData = json.decode(data.body);
+   List<Posts> posts=[];
+      for(var p in jsonData){
+        Posts post =Posts(p["id"],p["title"],p["body"]);
+        posts.add(post);
+      }
+      print(posts.length);
+      return posts;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _getPosts(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.data==null){
+            return Container(
+              child: const Center(
+                child: Text('Loading....'),
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context,int index){
+              return Card(
+                child: ListTile(
+                  leading: Text(snapshot.data[index].id.toString()),
+                  title: Text(snapshot.data[index].title),
+                  subtitle: Text(snapshot.data[index].body),
+                ),
+              );
+            },
+          );
+        }
+    );
+  }
+}
+
+
+
+login_screen.dart
+
+
+import 'package:app1/Dashboard/dash_board_screen.dart';
+import 'package:app1/Register/register_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:app1/Database/database_helper.dart';
+
+
+class LoginScreen extends StatefulWidget{
+  const LoginScreen({super.key});
+
+
+
+  @override
+  State<LoginScreen> createState() {
+    return _LoginScreenState();
+  }
+
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _loginKey = GlobalKey<FormState>();
+
+  final username = TextEditingController();
+  final password = TextEditingController();
+
+  var isObscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Welcome'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 24),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _loginKey,
+            child: Column(
+              children: [
+                Image.asset('assets/images/LoginPageImg.jfif'),
+                const SizedBox(height: 30),
+                TextFormField(
+                  controller: username,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter email',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 25),
+                TextFormField(
+                  controller: password,
+                  obscureText: isObscure,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: 'Enter password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: isObscure
+                          ? const Icon(Icons.visibility_off)
+                          : const Icon(Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          isObscure = !isObscure;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter Password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 30),
+               Container(
+                 height: 55,
+                 width: double.infinity,
+                 decoration: BoxDecoration(
+                   color: Colors.deepPurple,
+                   borderRadius: BorderRadius.circular(10)
+                   ),
+                 child: TextButton(
+                   onPressed: () {
+                     if(_loginKey.currentState!.validate()){
+                       Navigator.push(
+                           context,
+                           MaterialPageRoute(builder: (context)=>DashBoard()));
+                     }
+
+                   },
+                   child: const Text('LOGIN',
+                   style: TextStyle(
+                     color: Colors.white
+                   ),
+                   ),
+                 ),
+
+                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   const Text('Dont have an account?'),
+                    TextButton(onPressed: (){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                    },
+                        child: const Text('SIGN UP',
+                          style: TextStyle(
+                            color: Colors.deepPurple
+                          ),
+                        ))
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+list_view_model.dart
+
+
+class Posts{
+  int id;
+  String title;
+  String body;
+
+  Posts(this.id,this.title,this.body);
+
+}
+
+
+user_model.dart
+
+class User {
+  final int? id;
+  final String name;
+  final String email;
+  final String phone;
+  final String password;
+
+  User({
+    this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.password,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'password': password,
+    };
+  }
+
+
+}
+
+
+register_screen.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:app1/Database/database_helper.dart';
+import 'package:app1/Models/user_model.dart';
+
+
+import '../Utils/widgets.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _registerKey = GlobalKey<FormState>();
+
+
+  String? _name;
+  String? _email;
+  String? _phone;
+  String? _password;
+  bool isObscure= true;
+
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
+  }
+
+  // Validator for Email
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    // Simple email validation
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  // Validator for Phone
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    // Simple phone number validation (example: must be 10 digits)
+    if (value.length != 10) {
+      return 'Phone number must be 10 digits';
+    }
+    return null;
+  }
+
+
+  // Validator for Password
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    // Check for minimum length
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Register'),
+        ),
+        body: Center(
+          child: Container(
+              alignment: Alignment.topCenter,
+              padding: const EdgeInsets.all(24),
+              child: SingleChildScrollView(
+                child:Form(
+                  key: _registerKey,
+                  child:Column(
+                    children: [
+                      profileImage(),
+                      const SizedBox(height: 20,),
+                    CustomTextFormWidget(
+                        lblText: 'Name',
+                        prefixIcon: Icons.person,
+                        validator: validateName,
+                        keyboardType: TextInputType.text,
+                        onSaved: (value)=> _name=value
+                    ),
+                      const SizedBox(height: 10,),
+                      CustomTextFormWidget(
+                          lblText: 'Email',
+                          prefixIcon: Icons.email,
+                          validator: validateEmail,
+                          keyboardType: TextInputType.emailAddress,
+                          onSaved: (value)=> _email=value
+                      ),
+                      const SizedBox(height: 10,),
+                      CustomTextFormWidget(
+                          lblText: 'Phone',
+                          prefixIcon: Icons.phone,
+                          validator: validatePhone,
+                          keyboardType: TextInputType.phone,
+                          onSaved: (value)=> _phone=value
+                      ),
+                      const SizedBox(height: 10,),
+                      CustomTextFormWidget(
+                          lblText: 'Password',
+                          prefixIcon: Icons.password,
+                          suffixIcon: IconButton(
+                            icon: isObscure
+                                ? const Icon(Icons.visibility_off)
+                                : const Icon(Icons.visibility),
+                            onPressed: () {
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                          ),
+                          validator: validatePassword,
+                          keyboardType: TextInputType.visiblePassword,
+                          onSaved: (value)=> _password=value,
+                        isObscure: isObscure,
+                      ),
+                      const SizedBox(height: 20,),
+                      Container(
+                        height: 55,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: TextButton(
+                          onPressed: ()  {
+                            if(_registerKey.currentState!.validate()){
+                              _registerKey.currentState!.save();
+
+
+
+
+                            }
+                          },
+                          child: const Text('REGISTER',
+                            style: TextStyle(
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+
+                      ),
+
+                    ],
+                  ), ) ,
+              )
+          ),
+        )
+    );
+  }
+  Widget profileImage(){
+    return Center(
+      child: Stack(
+        children: [
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: AssetImage('assets/images/register_img.jpg'),
+          ),
+          Positioned(
+              bottom: 20,
+              right: 10,
+              child:InkWell(
+                  onTap: (){
+                    showModalBottomSheet(context: context,
+                        builder: (builder)=>bottomSheet());
+                  },
+                  child: Icon(Icons.camera_alt,size: 40,)
+              )
+          )
+        ],
+      ),
+    );
+  }
+
+
+  Widget bottomSheet(){
+    return Container(
+      height: 200,
+      width: double.infinity,
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Text('Choose Profile Image'),
+          SizedBox(height: 30,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton.icon(onPressed: (){},
+                  icon: Icon(Icons.camera_alt),
+                  label: Text('Camera'),
+              ),
+              SizedBox(width: 40,),
+              TextButton.icon(onPressed: (){},
+                icon: Icon(Icons.image),
+                label: Text('Gallery'),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+}
+
+
+
+
+widgets.dart
+
+import 'package:flutter/material.dart';
+
+
+
+
+class CustomTextFormWidget extends StatelessWidget {
+
+  final String lblText;
+  final IconData prefixIcon;
+  final String? Function(String? value) validator;
+  final TextInputType keyboardType;
+  final String? Function(String?) onSaved;
+  final IconButton? suffixIcon;
+  final bool isObscure;
+
+  const CustomTextFormWidget({super.key,required this.lblText, required this.prefixIcon,required this.validator,required this.keyboardType, required this.onSaved, this.suffixIcon, this.isObscure=false});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(
+          labelText: lblText,
+          border: const OutlineInputBorder(),
+          prefixIcon: Icon(prefixIcon),
+          suffixIcon: suffixIcon
+      ),
+      keyboardType: keyboardType,
+      validator: validator,
+      onSaved: onSaved,
+      obscureText: isObscure,
+    );
+  }
+}
+
+
+main.dart
+
+import 'package:flutter/material.dart';
+import 'my_app.dart';
+
+void main(){
+  runApp(const MyApp());
+}
+
+
+
+my_app.dart
+
+
+import 'package:app1/Login/login_screen.dart';
+import 'package:flutter/material.dart';
+
+
+class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: LoginScreen()
+    );
+  }
+
+
+}
+
+
+
+
+
