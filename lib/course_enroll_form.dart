@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:assignment2/Provider/logged_student.dart';
 import 'package:assignment2/database_helper.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:provider/provider.dart';
+import '../Utils/location.dart';
 
 class CourseEnrollForm extends StatefulWidget {
   const CourseEnrollForm({super.key});
@@ -13,19 +13,16 @@ class CourseEnrollForm extends StatefulWidget {
 }
 
 class _CourseEnrollFormState extends State<CourseEnrollForm> {
-
   DatabaseHelper db = DatabaseHelper();
   List<Map<String, dynamic>> courses = [];
   List<int> selectedCourses = [];
-  List<int> enrolledCourseList =  [];
+  List<int> enrolledCourseList = [];
 
   @override
   void initState() {
     super.initState();
     _loadCourses();
-
   }
-
 
   Future<void> _loadCourses() async {
     final courseList = await db.getCourses();
@@ -34,6 +31,45 @@ class _CourseEnrollFormState extends State<CourseEnrollForm> {
     });
   }
 
+  Future<void> _loadEnrolledCourses(int studentId) async {
+    try {
+      // Get the list of courses the student is already enrolled in
+      final enrolledCourses = await db.getEnrolledCourse(studentId);
+
+      // Debugging: Print the enrolled courses to check the response from DB
+      print("Enrolled courses from DB: $enrolledCourses");
+
+      // Check if enrolledCourses is not empty and handle null values properly
+      if (enrolledCourses.isNotEmpty) {
+        setState(() {
+          enrolledCourseList = enrolledCourses
+              .map<int>((course) {
+            // Safely retrieve and cast courseId or handle null
+            var courseId = course['cou_id'];
+            if (courseId != null && courseId is int) {
+              return courseId;
+            } else {
+              // Log or handle if courseId is null or not an int
+              print("Invalid or null courseId: $courseId");
+              return 0; // Provide a fallback value
+            }
+          }).toList();
+        });
+      }
+
+      // Debugging: Check if enrolledCourseList is being populated correctly
+      print("enrolledCourseList: $enrolledCourseList");
+    } catch (e) {
+      print("Error loading enrolled courses: $e");
+    }
+  }
+
+  // Load enrolled courses once the student is available
+  void _loadStudentEnrolledCourses(LoggedStudent loggedStudent) {
+    if (enrolledCourseList.isEmpty) {
+      _loadEnrolledCourses(loggedStudent.logStudent!.id!);
+    }
+  }
 
   void _onCourseSelected(bool? selected, int courseId) {
     setState(() {
@@ -44,16 +80,6 @@ class _CourseEnrollFormState extends State<CourseEnrollForm> {
       }
     });
   }
-  void _loadEnrolledCourses(int studId) async {
-    final enrolledCoursesList = await db.getEnrolledCourse(studId);
-    setState(() {
-      enrolledCourseList= enrolledCoursesList.map((course) => course['course_id'] as int).toList();
-    });
-  }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +89,11 @@ class _CourseEnrollFormState extends State<CourseEnrollForm> {
         padding: const EdgeInsets.all(16.0),
         child: Consumer<LoggedStudent>(
           builder: (context, loggedStudent, child) {
+            final studentId = loggedStudent.logStudent!.id!;
+
+            // Load enrolled courses once
+            _loadStudentEnrolledCourses(loggedStudent);
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -84,79 +115,53 @@ class _CourseEnrollFormState extends State<CourseEnrollForm> {
                     itemBuilder: (context, index) {
                       final course = courses[index];
 
-                      // Disable the checkbox if the student is already enrolled in the course
-                      bool isDisabled = enrolledCourseList.contains(course['id']);
+                      // Ensure both are the same type (int) for proper comparison
+                      bool isDisabled = enrolledCourseList.contains(course['id'] as int);
+
                       return CheckboxListTile(
                         title: Text(course['name']),
                         value: selectedCourses.contains(course['id']),
                         onChanged: isDisabled
-                            ? null  // Disable if already enrolled
+                            ? null // Disable the checkbox if already enrolled
                             : (bool? selected) {
                           _onCourseSelected(selected, course['id']);
                         },
-                        subtitle: isDisabled ? Text("Already enrolled", style: TextStyle(color: Colors.grey)) : null,
+                        subtitle: isDisabled
+                            ? Text("Already enrolled", style: TextStyle(color: Colors.grey))
+                            : null,
                       );
                     },
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                // Button to save the enrolled courses
+                SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
-
                     onPressed: () async {
-            // Function to determine position
-                    Future<Position> _determinePosition() async {
-                    bool serviceEnabled;
-                    LocationPermission permission;
+                      // Ensure the user has selected courses
+                      if (selectedCourses.isNotEmpty) {
+                        Position? position = await determinePosition();
+                        String positionString = "${position.latitude},${position.longitude}";
 
-                    // Test if location services are enabled
-                    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-                    if (!serviceEnabled) {
-                    return Future.error('Location services are disabled.');
-                    }
+                        for (var courseId in selectedCourses) {
+                          await db.insertEnrolledCourse(studentId, courseId, positionString);
+                        }
 
-                    permission = await Geolocator.checkPermission();
-                    if (permission == LocationPermission.denied) {
-                    permission = await Geolocator.requestPermission();
-                    if (permission == LocationPermission.denied) {
-                    return Future.error('Location permissions are denied');
-                    }
-                    }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Courses enrolled successfully")),
+                        );
 
-                    if (permission == LocationPermission.deniedForever) {
-                    return Future.error(
-                    'Location permissions are permanently denied, we cannot request permissions.');
-                    }
+                        // Refresh the enrolled courses list after enrollment
+                        List<Map<String, dynamic>> updatedCourses = await db.getEnrolledCourse(studentId);
 
-                    // When permissions are granted, get the current position
-                    return await Geolocator.getCurrentPosition();
-                    }
-
-                    // Get position
-                    Position? position = await _determinePosition();
-
-                    // Convert position to a string (latitude,longitude)
-                    String positionString = "${position.latitude},${position.longitude}";
-
-                    // Debugging: Print selected courses and position
-                    print(selectedCourses);
-                    print(positionString);
-
-                    final studentId = loggedStudent.logStudent!.id;
-                    print(studentId);
-                    // Save each selected course into the enrolled courses table, along with the position
-                    for (var courseId in selectedCourses) {
-                    await db.insertEnrolledCourse(studentId!, courseId, positionString);
-                    }
-                    // Show a confirmation or success message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Courses enrolled successfully")),
-                    );
+                        // Return the updated courses list back to the Dashboard screen
+                        Navigator.pop(context, updatedCourses);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please select at least one course")),
+                        );
+                      }
                     },
-
-            child: Text("Enroll"),
+                    child: Text("Enroll"),
                   ),
                 ),
               ],
@@ -166,6 +171,4 @@ class _CourseEnrollFormState extends State<CourseEnrollForm> {
       ),
     );
   }
-
 }
-

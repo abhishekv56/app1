@@ -159,28 +159,37 @@ class DatabaseHelper {
   }
 
 
-  Future<void> insertEnrolledCourse(int studentId, int courseId, String location) async{
+  Future<void> insertEnrolledCourse(int studentId, int courseId, String location) async {
     final db = await getDB();
-    try{
-      db.insert(
+    try {
+      // Debugging print statement
+      print('Inserting Enrolled Course: StudentId: $studentId, CourseId: $courseId, Location: $location');
+
+      await db.insert(
           tblEnrolledCourse,
           EnrolledCourse(studentId: studentId, courseId: courseId, location: location).toMap(),
           conflictAlgorithm: ConflictAlgorithm.abort
       );
-    }
-    catch(e){
-      throw e;
-    }
 
+      print('Insert successful');
+    } catch (e) {
+      print('Error inserting enrolled course: $e');
+      throw e;  // Re-throw error after logging it
+    }
   }
 
-  Future<List<Map<String, dynamic>>> getEnrolledCourse(int id) async {
+  Future<List<Map<String, dynamic>>> getEnrolledCourse(int studentId) async {
     final db = await getDB();
     final res = await db.rawQuery(
-        'SELECT * FROM $tblEnrolledCourse WHERE $colStudId=?', [id]
+        'SELECT * FROM $tblEnrolledCourse JOIN $tblCourse ON $colCourId=$colCourseId WHERE $colStudId=?', [studentId]
     );
+
+    // Print the entire result to debug the issue
+    print("Enrolled Courses Raw Data: $res");
+
     return res;
   }
+
 
 }
 
